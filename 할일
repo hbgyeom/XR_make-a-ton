@@ -2,3 +2,6 @@
 1. plot display 시간 지정
 2. pitch freq 정규화
 3. pitch graph 앞뒤 자르기 
+4. intensity도 추가로 출력해보기, 연산시간이 더 걸릴수도?
+5. sampling rate, data 크기 줄여보기?
+6. pitch 선으로 이어주기
