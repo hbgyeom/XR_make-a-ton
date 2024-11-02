@@ -14,6 +14,7 @@ model = WhisperModel("tiny", device="cpu", compute_type="int8")
 
 
 def recognize_worker():
+    flag = 0
     while True:
         audio = audio_queue.get()
         if audio is None:
@@ -40,7 +41,10 @@ def recognize_worker():
                 plt.title("Pitch over time")
                 plt.tight_layout()
                 plt.show()
-
+                flag = 1
+                break
+            if flag:
+                flag = 0
                 break
 
         except Exception as e:
