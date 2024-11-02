@@ -7,7 +7,7 @@ from faster_whisper import WhisperModel
 r = sr.Recognizer()
 audio_queue = Queue()
 
-model = WhisperModel("base", device="cpu", compute_type="int8")
+model = WhisperModel("tiny", device="cpu", compute_type="int8")
 
 
 def recognize_worker():
@@ -34,6 +34,8 @@ recognize_thread = Thread(target=recognize_worker)
 recognize_thread.daemon = True
 recognize_thread.start()
 with sr.Microphone(sample_rate=16000) as source:
+    r.adjust_for_ambient_noise(source)
+    print("Ready for recording")
     try:
         while True:
             audio_queue.put(r.listen(source))
