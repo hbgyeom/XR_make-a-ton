@@ -6,6 +6,7 @@ ver1: 음성인식
 ver3.2: 인식된 음성이랑 TTS pitch 비교 기능 추가
 
 추가해야될 기능 -> 녹음 음성이랑 TTS에서 생성한 음성 그래프 시간 맞추기
+
 두 음성 그래프 정규화 -> 목소리 높낮이 정규화
 
 c++로 코드 바꿔야되면 좀 힘들어질수도... -> 파이썬 speech_recognition이 energy_threshold로
