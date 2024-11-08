@@ -66,6 +66,8 @@ def plot_graph():
         og_times = og_pitch.xs()
         og_freq = og_pitch.selected_array['frequency']
 
+        if(text == ""):
+            continue
         tts = gTTS(text=text, lang="en")
         tts.save("audio.mp3")
         tts_voice = parselmouth.Sound("audio.mp3")
