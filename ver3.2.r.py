@@ -2,9 +2,10 @@ import numpy as np
 import queue
 import threading
 import matplotlib.pyplot as plt
-import librosa
+import parselmouth
 import speech_recognition as sr
 from faster_whisper import WhisperModel
+from gtts import gTTS
 
 r = sr.Recognizer()
 audio_queue = queue.Queue()
@@ -47,12 +48,37 @@ def transcribe_audio():
 
 def plot_graph():
     while True:
-        item = plot_queue.get()
-        if item is None:
+        plot_data = plot_queue.get()
+        if plot_data is None:
             break
-        audio_data, text = item
+        audio_data, text = plot_data
 
-        sr = 16000
+        original_voice = parselmouth.Sound(audio_data, 16000)
+        original_pitch = original_voice.to_pitch()
+        original_times = original_pitch.xs()
+        original_frequencies = original_pitch.selected_array['frequency']
+
+        tts = gTTS(text=text, lang="en")
+        tts.save("audio.mp3")
+        tts_voice = parselmouth.Sound("audio.mp3")
+        tts_pitch = tts_voice.to_pitch()
+        tts_times = tts_pitch.xs()
+        tts_frequencies = tts_pitch.selected_array['frequency']
+        tts_frequencies_adjusted = np.interp(original_times, tts_times,
+                                             tts_frequencies)
+
+        plt.figure(figsize=(10, 6))
+        plt.scatter(original_times, original_frequencies, color='blue', s=10,
+                    label="Original Voice Pitch")
+        plt.scatter(original_times, tts_frequencies_adjusted, color='red',
+                    s=10, label="TTS Voice Pitch")
+        plt.title(f"{text}")
+        plt.xlabel("Time [s]")
+        plt.ylabel("Frequency [Hz]")
+        plt.ylim(0, 500)
+        plt.legend()
+        plt.tight_layout()
+        plt.show()
 
 
 record_thread = threading.Thread(target=record_audio)
