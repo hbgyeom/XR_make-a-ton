@@ -38,7 +38,6 @@ def transcribe_audio():
     while True:
         audio = audio_queue.get()
         if audio is None:
-            plot_queue.put(None)
             break
         try:
             audio_data = np.frombuffer(audio.get_raw_data(),
@@ -60,19 +59,12 @@ def plot_graph():
     """
     while True:
         plot_data = plot_queue.get()
-        if plot_data is None:
-            break
         audio_data, text = plot_data
 
-        original_voice = parselmouth.Sound(audio_data, 16000)
-        original_pitch = original_voice.to_pitch()
-        original_times = original_pitch.xs()
-        original_freq = original_pitch.selected_array['frequency']
-        nz_idx_original = original_freq != 0
-        filtered_original_times = original_times[nz_idx_original]
-        filtered_original_freq = original_freq[nz_idx_original]
-        if filtered_original_times.size > 0:
-            filtered_original_times -= filtered_original_times[0]
+        og_voice = parselmouth.Sound(audio_data, 16000)
+        og_pitch = og_voice.to_pitch()
+        og_times = og_pitch.xs()
+        og_freq = og_pitch.selected_array['frequency']
 
         tts = gTTS(text=text, lang="en")
         tts.save("audio.mp3")
@@ -80,17 +72,13 @@ def plot_graph():
         tts_pitch = tts_voice.to_pitch()
         tts_times = tts_pitch.xs()
         tts_freq = tts_pitch.selected_array['frequency']
-        nz_idx_tts = tts_freq != 0
-        filtered_tts_times = tts_times[nz_idx_tts]
-        filtered_tts_freq = tts_freq[nz_idx_tts]
 
-        tts_freq_adj = np.interp(filtered_original_times, filtered_tts_times,
-                                 filtered_tts_freq)
+        tts_freq_adj = np.interp(og_times, tts_times, tts_freq)
 
         plt.figure(figsize=(10, 6))
-        plt.scatter(filtered_original_times, filtered_original_freq,
-                    color='blue', s=10, label="Original Voice Pitch")
-        plt.scatter(filtered_original_times, tts_freq_adj, color='red', s=10,
+        plt.scatter(og_times, og_freq, color='blue', s=10,
+                    label="Original Voice Pitch")
+        plt.scatter(og_times, tts_freq_adj, color='red', s=10,
                     label="TTS Voice Pitch")
         plt.title(f"{text}")
         plt.xlabel("Time [s]")
@@ -101,7 +89,7 @@ def plot_graph():
         plt.show()
 
 
-# 스레딩
+# 쓰레딩
 record_thread = threading.Thread(target=record_audio)
 transcribe_thread = threading.Thread(target=transcribe_audio)
 plot_thread = threading.Thread(target=plot_graph)
