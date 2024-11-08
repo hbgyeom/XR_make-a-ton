@@ -67,22 +67,31 @@ def plot_graph():
         original_voice = parselmouth.Sound(audio_data, 16000)
         original_pitch = original_voice.to_pitch()
         original_times = original_pitch.xs()
-        original_frequencies = original_pitch.selected_array['frequency']
+        original_freq = original_pitch.selected_array['frequency']
+        nz_idx_original = original_freq != 0
+        filtered_original_times = original_times[nz_idx_original]
+        filtered_original_freq = original_freq[nz_idx_original]
+        if filtered_original_times.size > 0:
+            filtered_original_times -= filtered_original_times[0]
 
         tts = gTTS(text=text, lang="en")
         tts.save("audio.mp3")
         tts_voice = parselmouth.Sound("audio.mp3")
         tts_pitch = tts_voice.to_pitch()
         tts_times = tts_pitch.xs()
-        tts_frequencies = tts_pitch.selected_array['frequency']
-        tts_frequencies_adjusted = np.interp(original_times, tts_times,
-                                             tts_frequencies)
+        tts_freq = tts_pitch.selected_array['frequency']
+        nz_idx_tts = tts_freq != 0
+        filtered_tts_times = tts_times[nz_idx_tts]
+        filtered_tts_freq = tts_freq[nz_idx_tts]
+
+        tts_freq_adj = np.interp(filtered_original_times, filtered_tts_times,
+                                 filtered_tts_freq)
 
         plt.figure(figsize=(10, 6))
-        plt.scatter(original_times, original_frequencies, color='blue', s=10,
-                    label="Original Voice Pitch")
-        plt.scatter(original_times, tts_frequencies_adjusted, color='red',
-                    s=10, label="TTS Voice Pitch")
+        plt.scatter(filtered_original_times, filtered_original_freq,
+                    color='blue', s=10, label="Original Voice Pitch")
+        plt.scatter(filtered_original_times, tts_freq_adj, color='red', s=10,
+                    label="TTS Voice Pitch")
         plt.title(f"{text}")
         plt.xlabel("Time [s]")
         plt.ylabel("Frequency [Hz]")
