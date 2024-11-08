@@ -71,9 +71,14 @@ def plot_graph():
             start_og, end_og = nz_indices_og[0], nz_indices_og[-1] + 1
             og_times = og_times[start_og:end_og]
             og_freq = og_freq[start_og:end_og]
-
-        if (text == ""):
+            
+        if text == "":
+            print("Text is empty, skipping plot.")
             continue
+        elif text == ".":
+            print("Text is just a period, skipping plot.")
+            continue
+            
         tts = gTTS(text=text, lang="en")
         tts.save("audio.mp3")
         tts_voice = parselmouth.Sound("audio.mp3")
@@ -87,25 +92,16 @@ def plot_graph():
             tts_times = tts_times[start_tts:end_tts]
             tts_freq = tts_freq[start_tts:end_tts]
 
-        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(6, 5))
 
-        ax1.scatter(og_times, og_freq, color='blue', s=10,
+        ax1.scatter(og_times, og_freq, color='blue', s=25,
                     label="Original Voice Pitch")
         ax1.set_title(f"{text}")
-        ax1.set_xlabel("Time [s]")
-        ax1.set_ylabel("Frequency [Hz]")
         ax1.set_ylim(0, 500)
-        ax1.legend()
-        ax1.grid(True)
 
-        ax2.scatter(tts_times, tts_freq, color='red', s=10,
+        ax2.scatter(tts_times, tts_freq, color='red', s=25,
                     label="TTS Voice Pitch")
-        ax2.set_title(f"{text}")
-        ax2.set_xlabel("Time [s]")
-        ax2.set_ylabel("Frequency [Hz]")
         ax2.set_ylim(0, 500)
-        ax2.legend()
-        ax2.grid(True)
 
         plt.tight_layout()
         plt.show()
