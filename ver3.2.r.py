@@ -59,6 +59,8 @@ def plot_graph():
     """
     while True:
         plot_data = plot_queue.get()
+        if plot_data is None:
+            break
         audio_data, text = plot_data
 
         og_voice = parselmouth.Sound(audio_data, 16000)
