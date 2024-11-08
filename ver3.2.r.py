@@ -11,6 +11,7 @@ from gtts import gTTS
 r = sr.Recognizer()
 audio_queue = queue.Queue()
 plot_queue = queue.Queue()
+plot_queue.put(None)
 
 # 모델 로드
 model = WhisperModel("tiny.en", device="cpu", compute_type="int8")
@@ -57,10 +58,15 @@ def plot_graph():
     """
     plot_queue에서 audio_data, text 가져온 후 그래프 그림
     """
+    first_run = True
     while True:
         plot_data = plot_queue.get()
         if plot_data is None:
-            break
+            if first_run:
+                first_run = False
+                continue
+            else:
+                break
         audio_data, text = plot_data
 
         og_voice = parselmouth.Sound(audio_data, 16000)
