@@ -95,7 +95,7 @@ def plot_graph():
         ax1.set_ylim(0, 500)
 
         for i in range(len(og_freq) - 1):
-            if abs(og_freq[i + 1] - og_freq[i]) <= 50:
+            if abs(og_freq[i + 1] - og_freq[i]) <= 25:
                 ax1.plot(og_times[i:i + 2], og_freq[i:i + 2], color='blue',
                          linestyle='-')
             ax1.plot(og_times[i], og_freq[i], color='blue', markersize=3)
@@ -108,7 +108,7 @@ def plot_graph():
         ax2.set_ylim(0, 500)
 
         for i in range(len(tts_freq) - 1):
-            if abs(tts_freq[i + 1] - tts_freq[i]) <= 50:
+            if abs(tts_freq[i + 1] - tts_freq[i]) <= 25:
                 ax2.plot(tts_times[i:i + 2], tts_freq[i:i + 2], color='red',
                          linestyle='-')
             ax2.plot(tts_times[i], tts_freq[i], color='red', markersize=3)
