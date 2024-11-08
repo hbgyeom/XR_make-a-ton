@@ -7,14 +7,19 @@ import speech_recognition as sr
 from faster_whisper import WhisperModel
 from gtts import gTTS
 
+# 변수 선언
 r = sr.Recognizer()
 audio_queue = queue.Queue()
 plot_queue = queue.Queue()
 
+# 모델 로드
 model = WhisperModel("tiny.en", device="cpu", compute_type="int8")
 
 
 def record_audio():
+    """
+    오디오 녹음 후 audio_queue에 추가
+    """
     with sr.Microphone(sample_rate=16000) as source:
         r.adjust_for_ambient_noise(source)
         print("Recording... Press Ctrl+C to stop.")
@@ -27,6 +32,9 @@ def record_audio():
 
 
 def transcribe_audio():
+    """
+    audio_queue에서 audio_data 가져온 후 모델 로드해 transcribe
+    """
     while True:
         audio = audio_queue.get()
         if audio is None:
@@ -47,6 +55,9 @@ def transcribe_audio():
 
 
 def plot_graph():
+    """
+    plot_queue에서 audio_data, text 가져온 후 그래프 그림
+    """
     while True:
         plot_data = plot_queue.get()
         if plot_data is None:
@@ -81,6 +92,7 @@ def plot_graph():
         plt.show()
 
 
+# 스레딩
 record_thread = threading.Thread(target=record_audio)
 transcribe_thread = threading.Thread(target=transcribe_audio)
 plot_thread = threading.Thread(target=plot_graph)
