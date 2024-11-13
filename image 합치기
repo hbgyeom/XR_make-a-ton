@@ -4,8 +4,8 @@ from PIL import Image
 plt.savefig("plot1.png", transparent=True, bbox_inches='tight', pad_inches=0)
 
 # 두 이미지 불러오기
-img1 = Image.open("im1.png")
-img2 = Image.open("im2.png")
+img1 = Image.open("plot1.png")
+img2 = Image.open("plot2.png")
 
 # 두 이미지를 알파 값 0.5로 혼합
 blended_img = Image.blend(img1, img2, alpha=0.5)
