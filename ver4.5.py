@@ -51,10 +51,11 @@ def transcribe_audio():
 
         except Exception as e:
             print("Error during transcription:", e)
-fig = None
+fig = None # fig 추가
 
 def plot_graph():
-    global fig
+    global fig # 전역변수로 설정
+
     
     """
     Retrieves audio_data and text from plot_queue, then plots pitch and intensity graphs.
@@ -85,12 +86,12 @@ def plot_graph():
         if text == "":
             print("Text is empty, skipping plot.")
             while plot_queue.empty():    
-                plt.pause(0.1)
+                plt.pause(0.1) #이걸 통해 다음 그래프 나오기 전까지 이전 그래프 보여줌
             continue
         elif text == ".":
             print("Text is just a period, skipping plot.")
             while plot_queue.empty():    
-                plt.pause(0.1)            
+                plt.pause(0.1)  #이걸 통해 다음 그래프 나오기 전까지 이전 그래프 보여줌          
             continue
 
         if fig is not None:
@@ -140,7 +141,7 @@ def plot_graph():
         print("plt show")
 
         plt.tight_layout()
-        plt.pause(0.1)  # 그래프를 잠시 보여줌
+        plt.pause(0.1)  # 그래프를 잠시 보여줌. 이걸 통해 다음 그래프 나오기 전까지 이전 그래프 보여줌
 
 
 
