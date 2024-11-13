@@ -1,0 +1,13 @@
+from PIL import Image
+
+#투명하게 그래프를 이미지로 저장
+plt.savefig("plot1.png", transparent=True, bbox_inches='tight', pad_inches=0)
+
+# 두 이미지 불러오기
+img1 = Image.open("im1.png")
+img2 = Image.open("im2.png")
+
+# 두 이미지를 알파 값 0.5로 혼합
+blended_img = Image.blend(img1, img2, alpha=0.5)
+# 결과 이미지 보기
+blended_img.show()
