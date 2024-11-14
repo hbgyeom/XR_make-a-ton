@@ -56,9 +56,9 @@ if nz_indices_og.size > 0:
 
 og_intensity = og_voice.to_intensity()
 og_intensity_times = og_intensity.xs()
-og_intensity_times = og_intensity_times[start_og:end_og]
+# og_intensity_times = og_intensity_times[start_og:end_og]
 og_intensity_values = og_intensity.values.T
-og_intensity_values = og_intensity_values[start_og:end_og]
+# og_intensity_values = og_intensity_values[start_og:end_og]
 
 tts = gTTS(text=text, lang="en")
 tts.save("audio.mp3")
@@ -79,9 +79,9 @@ if nz_indices_tts.size > 0:
 
 tts_intensity = tts_voice.to_intensity()
 tts_intensity_times = tts_intensity.xs()
-tts_intensity_times = tts_intensity_times[start_tts:end_tts]
+# tts_intensity_times = tts_intensity_times[start_tts:end_tts]
 tts_intensity_values = tts_intensity.values.T
-tts_intensity_values = tts_intensity_values[start_tts:end_tts]
+# tts_intensity_values = tts_intensity_values[start_tts:end_tts]
 
 pitch_return = [og_times, og_freq, tts_times, tts_freq]
 intensity_return = [og_intensity_times, og_intensity_values,
