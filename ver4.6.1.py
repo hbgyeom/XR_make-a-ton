@@ -47,6 +47,14 @@ def transcribe_audio():
             print("Error during transcription:", e)
 
 
+def high_seg(times, freq):
+    mean_freq = np.mean(freq)
+    std_freq = np.std(freq)
+
+    filtered_freq = np.where(freq > mean_freq + 2 * std_freq, 0, freq)
+    return np.array(times), np.array(filtered_freq)
+
+
 def short_seg(times, freq, threshold):
     filtered_times = []
     filtered_freq = []
@@ -80,6 +88,7 @@ def process_data(audio_data, text, threshold=5):
     og_times = og_pitch.xs()
     og_freq = og_pitch.selected_array['frequency']
 
+    og_times, og_freq = high_seg(og_times, og_freq)
     og_times, og_freq = short_seg(og_times, og_freq, 5)
 
     nz_indices_og = np.nonzero(og_freq)[0]
@@ -103,6 +112,7 @@ def process_data(audio_data, text, threshold=5):
     tts_times = tts_pitch.xs()
     tts_freq = tts_pitch.selected_array['frequency']
 
+    tts_times, tts_freq = high_seg(tts_times, tts_freq)
     tts_times, tts_freq = short_seg(tts_times, tts_freq, 5)
 
     nz_indices_tts = np.nonzero(tts_freq)[0]
