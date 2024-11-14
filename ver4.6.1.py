@@ -86,6 +86,7 @@ def process_data(audio_data, text, threshold=5):
 
     og_pitch = og_voice.to_pitch()
     og_times = og_pitch.xs()
+    temp = len(og_times)
     og_freq = og_pitch.selected_array['frequency']
 
     og_times, og_freq = high_seg(og_times, og_freq)
@@ -99,9 +100,12 @@ def process_data(audio_data, text, threshold=5):
 
     og_intensity = og_voice.to_intensity()
     og_intensity_times = og_intensity.xs()
-    # og_intensity_times = og_intensity_times[start_og:end_og]
+    length = len(og_intensity_times)
+    og_intensity_times = og_intensity_times[
+        length * start_og // temp:length * end_og // temp]
     og_intensity_values = og_intensity.values.T
-    # og_intensity_values = og_intensity_values[start_og:end_og]
+    og_intensity_values = og_intensity_values[
+        length * start_og // temp:length * end_og // temp]
 
     tts = gTTS(text=text, lang="en")
     tts.save("audio.mp3")
@@ -110,6 +114,7 @@ def process_data(audio_data, text, threshold=5):
 
     tts_pitch = tts_voice.to_pitch()
     tts_times = tts_pitch.xs()
+    temp2 = len(tts_times)
     tts_freq = tts_pitch.selected_array['frequency']
 
     tts_times, tts_freq = high_seg(tts_times, tts_freq)
@@ -123,9 +128,12 @@ def process_data(audio_data, text, threshold=5):
 
     tts_intensity = tts_voice.to_intensity()
     tts_intensity_times = tts_intensity.xs()
-    tts_intensity_times = tts_intensity_times[start_tts:end_tts]
+    length2 = len(tts_intensity_times)
+    tts_intensity_times = tts_intensity_times[
+        length2 * start_tts // temp2:length2 * end_tts // temp2]
     tts_intensity_values = tts_intensity.values.T
-    tts_intensity_values = tts_intensity_values[start_tts:end_tts]
+    tts_intensity_values = tts_intensity_values[
+        length2 * start_tts // temp2:length2 * end_tts // temp2]
 
     os.remove("audio.mp3")
 
@@ -136,9 +144,9 @@ def process_data(audio_data, text, threshold=5):
     return pitch_return, intensity_return
 
 
-def plot_plot(ax, data, color, text, scale):
+def plot_plot(ax, data, top, color, text, scale):
     ax.set_title(f"{text}")
-    ax.set_ylim(0, 500)
+    ax.set_ylim(0, top)
     ax.set_xticks([])
     ax.set_yticks([])
 
@@ -160,35 +168,48 @@ def plot_graph():
         pitch_return, intensity_return = process_data(audio_data, text)
 
         fig1, ax1 = plt.subplots()
-        plot_plot(ax1, pitch_return[:2], color='blue', text=text, scale=2)
+        plot_plot(ax1, pitch_return[:2], 350, color='blue', text=text, scale=2)
         plt.savefig("plot1.png", transparent=True,
                     bbox_inches='tight', pad_inches=0)
 
         fig3, ax3 = plt.subplots()
-        plot_plot(ax3, pitch_return[2:], color='red', text=" ", scale=1)
+        plot_plot(ax3, pitch_return[2:], 400, color='red', text=" ", scale=1)
         plt.savefig("plot3.png", transparent=True,
                     bbox_inches='tight', pad_inches=0)
 
         fig2, ax2 = plt.subplots()
-        plot_plot(ax2, intensity_return[:2], color='green', text=text, scale=1)
+        plot_plot(ax2, intensity_return[:2], max(intensity_return[1]) * 1.1,
+                  color='green', text=text, scale=1)
         plt.savefig("plot2.png", transparent=True,
                     bbox_inches='tight', pad_inches=0)
 
         fig4, ax4 = plt.subplots()
-        plot_plot(ax4, intensity_return[2:], color='purple', text=" ", scale=1)
+        plot_plot(ax4, intensity_return[2:], max(intensity_return[3]) * 1.1,
+                  color='purple', text=" ", scale=1)
         plt.savefig("plot4.png", transparent=True,
                     bbox_inches='tight', pad_inches=0)
-        plt.show()
+        # plt.show()
 
         img1 = Image.open("plot1.png")
         img3 = Image.open("plot3.png")
         blended_img1 = Image.blend(img1, img3, alpha=0.5)
-        blended_img1.show()
 
         img2 = Image.open("plot2.png")
         img4 = Image.open("plot4.png")
         blended_img2 = Image.blend(img2, img4, alpha=0.5)
-        blended_img2.show()
+
+        width1, height1 = blended_img1.size
+        width2, height2 = blended_img2.size
+        max_width = max(width1, width2)
+        total_height = height1 + height2
+
+        concatenated_image = Image.new('RGB', (max_width, total_height))
+
+        concatenated_image.paste(blended_img1, (0, 0))
+        concatenated_image.paste(blended_img2, (0, height1))
+
+        concatenated_image.show()
+        concatenated_image.save('concatenated_blended_image.png')
 
 
 record_thread = threading.Thread(target=record_audio)
