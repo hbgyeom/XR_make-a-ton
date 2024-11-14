@@ -10,10 +10,10 @@ public class RunPy : MonoBehaviour
         try {
             Process psi = new Process();
             UnityEngine.Debug.Log("ProcessLaunched");
-            psi.StartInfo.FileName = "C:\\ProgramData\\anaconda3\\python.exe";
+            psi.StartInfo.FileName = @"C:\\Users\\USERPC\\AppData\\Local\\Programs\\Python\\Python312\\python.exe";
             // 시작할 어플리케이션 또는 문서
             UnityEngine.Debug.Log("PythonLaunched");
-            psi.StartInfo.Arguments = "C:\\Users\\2011j\\EE101\\4_4_1_for_c#.py";
+            psi.StartInfo.Arguments = @"C:\Users\USERPC\EE101\\4.4.1_for_c#.py";
             // 애플 시작시 사용할 인수
             UnityEngine.Debug.Log("ProjLaunched");
             psi.StartInfo.CreateNoWindow = false;
