@@ -40,13 +40,22 @@ def short_seg(times, freq, threshold):
     return np.array(filtered_times), np.array(filtered_freq)
 
 
+def high_seg(times, freq):
+    mean_freq = np.mean(freq)
+    std_freq = np.std(freq)
+
+    filtered_freq = np.where(freq > mean_freq + 2 * std_freq, 0, freq)
+    return np.array(times), np.array(filtered_freq)
+
+
 og_voice = parselmouth.Sound(target)
 
 og_pitch = og_voice.to_pitch()
 og_times = og_pitch.xs()
 og_freq = og_pitch.selected_array['frequency']
 
-og_times, og_freq = short_seg(og_times, og_freq, 15)
+og_times, og_freq = high_seg(og_times, og_freq)
+og_times, og_freq = short_seg(og_times, og_freq, 10)
 
 nz_indices_og = np.nonzero(og_freq)[0]
 if nz_indices_og.size > 0:
@@ -69,7 +78,8 @@ tts_pitch = tts_voice.to_pitch()
 tts_times = tts_pitch.xs()
 tts_freq = tts_pitch.selected_array['frequency']
 
-tts_times, tts_freq = short_seg(tts_times, tts_freq, 5)
+tts_times, tts_freq = high_seg(tts_times, tts_freq)
+tts_times, tts_freq = short_seg(tts_times, tts_freq, 10)
 
 nz_indices_tts = np.nonzero(tts_freq)[0]
 if nz_indices_tts.size > 0:
