@@ -4,8 +4,8 @@ using UnityEngine.Networking;
 
 public class FlaskConnectionTester : MonoBehaviour
 {
-    private string flaskUrlFlag = "http://192.168.247.150:5000/get_flag";
-    private string flaskUrl1 = "http://192.168.247.150:5000/get_graph1";
+    private string flaskUrlFlag = "http://192.168.1.38:5000/get_flag";
+    private string flaskUrl1 = "http://192.168.1.38:5000/get_graph1";
     private GameObject quad; // Quad 객체를 미리 선언하여 참조 유지
 
     void Start()
