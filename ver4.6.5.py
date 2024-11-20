@@ -108,7 +108,6 @@ def process_data(audio_data, text, threshold=5):
     og_intensity = og_voice.to_intensity()
     og_intensity_times = og_intensity.xs()[::2]
     length = len(og_intensity_times)
-    print(length, start_og, end_og, temp)
     og_intensity_times = og_intensity_times[
         length * start_og // temp:length * end_og // temp]
     og_intensity_values = og_intensity.values.T[::2]
