@@ -3,9 +3,10 @@
 
 사용자 음성과 tts 음성 pitch & intensity 그래프 비교
 
-![concatenated_blended_image](https://github.com/user-attachments/assets/e4a982be-e0f9-4b28-8885-0aa40b002e17)
+결과 예시
 
+![blended_img](https://github.com/user-attachments/assets/98bcd3f0-7881-4d52-a388-875672403523)
 
-ver4.6.1 -- 가끔 이미지 blend 단계에서 images do not match 오류가 뜸
+ver4.6.3 -->
 
-![스크린샷(39)](https://github.com/user-attachments/assets/7ec089e0-7760-4ee9-8836-fb968f9910ff)
+![스크린샷(41)](https://github.com/user-attachments/assets/57ca56ec-c074-40c9-a20a-b7dfb2945ce7)
