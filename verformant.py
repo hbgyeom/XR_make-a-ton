@@ -183,8 +183,6 @@ def plot_graph():
             plt.title(text, fontsize=14)
             plt.xticks([])
             plt.yticks([])
-            plt.xlabel("Time (s)", fontsize=12)
-            plt.ylabel("Frequency (Hz)", fontsize=12)
 
             plt.tight_layout()
             plt.savefig("og_formant.png", pad_inches=0)
@@ -201,8 +199,6 @@ def plot_graph():
             plt.title(text, fontsize=14)
             plt.xticks([])
             plt.yticks([])
-            plt.xlabel("Time (s)", fontsize=12)
-            plt.ylabel("Frequency (Hz)", fontsize=12)
 
             plt.tight_layout()
             plt.savefig("tts_formant.png", pad_inches=0)
@@ -215,9 +211,16 @@ def plot_graph():
 
             og_img.close()
             tts_img.close()
-            blended_img.close()
             os.remove("og_formant.png")
             os.remove("tts_formant.png")
+
+            left = Image.open("ang.png")
+
+            total_width = left.width + blended_img.width
+            new_image = Image.new("RGB", (total_width, left.height))
+            new_image.paste(left, (0, 0))
+            new_image.paste(blended_img, (left.width, 0))
+            new_image.save("connected_image.jpg")
 
         except Exception as e:
             print(e)
