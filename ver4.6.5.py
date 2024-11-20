@@ -17,7 +17,7 @@ matplotlib.use('Agg')
 r = sr.Recognizer()
 audio_queue = queue.Queue()
 plot_queue = queue.Queue()
-spaces = [" " * 80, " " * 40, " " * 30, " " * 22, " " * 19, " " * 20]
+spaces = [" " * 80, " " * 40, " " * 30, " " * 22, " " * 19, " " * 16]
 
 # Load model
 model = WhisperModel("tiny.en", device="cpu", compute_type="int8")
@@ -108,6 +108,7 @@ def process_data(audio_data, text, threshold=5):
     og_intensity = og_voice.to_intensity()
     og_intensity_times = og_intensity.xs()[::2]
     length = len(og_intensity_times)
+    print(length, start_og, end_og, temp)
     og_intensity_times = og_intensity_times[
         length * start_og // temp:length * end_og // temp]
     og_intensity_values = og_intensity.values.T[::2]
