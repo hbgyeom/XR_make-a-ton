@@ -106,12 +106,12 @@ def process_data(audio_data, text, threshold=5):
         start_og, end_og = 0, len(og_freq) - 1
 
     og_intensity = og_voice.to_intensity()
-    og_intensity_times = og_intensity.xs()[::5]
+    og_intensity_times = og_intensity.xs()[::2]
     length = len(og_intensity_times)
     print(length, start_og, end_og, temp)
     og_intensity_times = og_intensity_times[
         length * start_og // temp:length * end_og // temp]
-    og_intensity_values = og_intensity.values.T[::5]
+    og_intensity_values = og_intensity.values.T[::2]
     og_intensity_values = og_intensity_values[
         length * start_og // temp:length * end_og // temp]
 
@@ -134,11 +134,11 @@ def process_data(audio_data, text, threshold=5):
         start_tts, end_tts = 0, len(tts_freq) - 1
 
     tts_intensity = tts_voice.to_intensity()
-    tts_intensity_times = tts_intensity.xs()
+    tts_intensity_times = tts_intensity.xs()[::2]
     length2 = len(tts_intensity_times)
     tts_intensity_times = tts_intensity_times[
         length2 * start_tts // temp2:length2 * end_tts // temp2]
-    tts_intensity_values = tts_intensity.values.T
+    tts_intensity_values = tts_intensity.values.T[::2]
     tts_intensity_values = tts_intensity_values[
         length2 * start_tts // temp2:length2 * end_tts // temp2]
 
@@ -184,47 +184,50 @@ def plot_graph():
             print("Plotting stopped.")
             break
 
-        audio_data, text = plot_data
+        try:
+            audio_data, text = plot_data
 
-        if text == "" or text == ".":
-            continue
+            if text == "" or text == ".":
+                continue
 
-        pitch_return, intensity_return = process_data(audio_data, text)
+            pitch_return, intensity_return = process_data(audio_data, text)
 
-        if ',' in text:
-            text = spaces[0].join(text.split(','))
-        else:
-            words = text.split()
-            num_words = len(words)
-            if (num_words > 7):
-                num_words = 7
-            text = spaces[num_words - 2].join(words)
+            if ',' in text:
+                text = spaces[0].join(text.split(','))
+            else:
+                words = text.split()
+                num_words = len(words)
+                if (num_words > 7):
+                    num_words = 7
+                    text = spaces[num_words - 2].join(words)
 
-        fig1, ax1 = plt.subplots(2, 1, figsize=(10, 4))
-        ax1[0].set_ylabel('Pitch  ', rotation=0, labelpad=22, fontsize=20)
-        plt.ylabel('Intensity', rotation=0, labelpad=33, fontsize=15)
-        create_plot(ax1, pitch_return[:2], intensity_return[:2],
-                    color='blue', text=text)
-        plt.savefig("og_plot.png", pad_inches=0)
-        plt.close(fig1)
+            fig1, ax1 = plt.subplots(2, 1, figsize=(10, 4))
+            ax1[0].set_ylabel('Pitch  ', rotation=0, labelpad=22, fontsize=20)
+            plt.ylabel('Intensity', rotation=0, labelpad=33, fontsize=15)
+            create_plot(ax1, pitch_return[:2], intensity_return[:2],
+                        color='blue', text=text)
+            plt.savefig("og_plot.png", pad_inches=0)
+            plt.close(fig1)
 
-        fig2, ax2 = plt.subplots(2, 1, figsize=(10, 4))
-        create_plot(ax2, pitch_return[2:], intensity_return[2:],
-                    color='red', text=text)
-        plt.savefig("tts_plot.png", pad_inches=0)
-        plt.close(fig2)
+            fig2, ax2 = plt.subplots(2, 1, figsize=(10, 4))
+            create_plot(ax2, pitch_return[2:], intensity_return[2:],
+                        color='red', text=text)
+            plt.savefig("tts_plot.png", pad_inches=0)
+            plt.close(fig2)
 
-        og_img = Image.open("og_plot.png")
-        tts_img = Image.open("tts_plot.png")
-        blended_img = Image.blend(og_img, tts_img, alpha=0.5)
-        blended_img.save("blended_img.png")
+            og_img = Image.open("og_plot.png")
+            tts_img = Image.open("tts_plot.png")
+            blended_img = Image.blend(og_img, tts_img, alpha=0.5)
+            blended_img.save("blended_img.png")
 
-        og_img.close()
-        tts_img.close()
-        blended_img.close()
+            og_img.close()
+            tts_img.close()
+            blended_img.close()
+            os.remove("og_plot.png")
+            os.remove("tts_plot.png")
 
-        os.remove("og_plot.png")
-        os.remove("tts_plot.png")
+        except Exception as e:
+            print(e)
 
 
 # Start threading
